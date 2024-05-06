@@ -1,0 +1,8 @@
+---
+import Layout from "../../layouts/Dashboard.astro";
+import { Dashboard as Dashboard_ } from "../../react/pages/dashboard";
+---
+
+<Layout title="Přehled soutěží"
+  ><Dashboard_ client:load pathname={Astro.url.pathname} /></Layout
+>

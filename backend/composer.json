@@ -1,0 +1,8 @@
+{
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "firebase/php-jwt": "^6.8",
+        "paragonie/sodium_compat": "^1.20",
+        "phpmailer/phpmailer": "^6.8"
+    }
+}

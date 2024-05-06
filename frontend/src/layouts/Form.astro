@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+import "../../styles/styles.css";
+---
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>{title}</title>
+  </head>
+  <body class="w-screen min-h-screen h-full bg-gray-100 overflow-x-hidden">
+    <div class="w-full flex justify-center items-start py-8 px-4">
+      <main
+        class="w-[32rem] max-w-full bg-white p-4 rounded-lg border border-gray-300"
+      >
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
