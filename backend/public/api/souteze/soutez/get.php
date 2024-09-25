@@ -38,7 +38,7 @@ function get()
   }
 
   $mysql->select_db("rezerv_sys");
-  $sql_skoly = "SELECT id, nazev FROM skoly ORDER BY mesto";
+  $sql_skoly = "SELECT id, nazev FROM skoly";
   $skoly = $mysql->query($sql_skoly)->fetch_all(MYSQLI_ASSOC);
 
   require_once __DIR__ . "/../../../../lib/response.php";
