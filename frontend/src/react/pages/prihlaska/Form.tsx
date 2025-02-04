@@ -42,7 +42,7 @@ export function Form({ url, data, onSubmit }: FormProps) {
       callBack={onSubmit}
     >
       <Select
-        label="Škola"
+        label="Škola (vyberte ze seznamu)"
         name="skola"
         selected={values.skola}
         values={data.skoly.map((x) => {
