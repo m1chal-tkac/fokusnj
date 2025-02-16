@@ -1,15 +1,22 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
 DROP DATABASE IF EXISTS `rezerv_sys`;
-CREATE DATABASE IF NOT EXISTS `rezerv_sys` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `rezerv_sys`;
 USE `rezerv_sys`;
+
+DROP TABLE IF EXISTS `souteze`;
+CREATE TABLE IF NOT EXISTS `souteze` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(13) NOT NULL,
+  `nazev` varchar(50) NOT NULL,
+  `pocet_prihlasek` tinyint unsigned NOT NULL DEFAULT '0',
+  `prihlasovani_od` date NOT NULL,
+  `prihlasovani_do` date NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url` (`url`)
+);
+
+DELETE FROM `souteze`;
+INSERT INTO `souteze` (`id`, `url`, `nazev`, `pocet_prihlasek`, `prihlasovani_od`, `prihlasovani_do`) VALUES
+	(147, '6638692b84165', 'Soutěž 1', 2, '2000-01-01', '2100-01-01');
 
 DROP TABLE IF EXISTS `pridavne_pole`;
 CREATE TABLE IF NOT EXISTS `pridavne_pole` (
@@ -21,20 +28,17 @@ CREATE TABLE IF NOT EXISTS `pridavne_pole` (
   PRIMARY KEY (`id`),
   KEY `pridavne_pole_id_souteze_foreign` (`id_souteze`),
   CONSTRAINT `pridavne_pole_id_souteze_foreign` FOREIGN KEY (`id_souteze`) REFERENCES `souteze` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 DELETE FROM `pridavne_pole`;
 
 DROP TABLE IF EXISTS `skoly`;
 CREATE TABLE IF NOT EXISTS `skoly` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `mesto` varchar(25) NOT NULL,
-  `jmeno` varchar(75) NOT NULL,
-  `adresa` varchar(25) NOT NULL,
-  `nazev` varchar(50) NOT NULL,
+  `nazev` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `nazev` (`nazev`)
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 DELETE FROM `skoly`;
 INSERT INTO `skoly` (`id`, `nazev`) VALUES
@@ -119,29 +123,13 @@ INSERT INTO `skoly` (`id`, `nazev`) VALUES
 	(54, 'ZŠ Ženklava'),
 	(55, 'ZŠ Životice');
 
-DROP TABLE IF EXISTS `souteze`;
-CREATE TABLE IF NOT EXISTS `souteze` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `url` varchar(13) NOT NULL,
-  `nazev` varchar(50) NOT NULL,
-  `pocet_prihlasek` tinyint unsigned NOT NULL DEFAULT '0',
-  `prihlasovani_od` date NOT NULL,
-  `prihlasovani_do` date NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `url` (`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-DELETE FROM `souteze`;
-INSERT INTO `souteze` (`id`, `url`, `nazev`, `pocet_prihlasek`, `prihlasovani_od`, `prihlasovani_do`) VALUES
-	(147, '6638692b84165', 'Soutěž 1', 2, '2000-01-01', '2100-01-01');
-
 DROP TABLE IF EXISTS `uzivatele`;
 CREATE TABLE IF NOT EXISTS `uzivatele` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL DEFAULT '',
   `heslo` char(60) DEFAULT NULL,
-  `jmeno` varchar(20) NOT NULL,
-  `prijmeni` varchar(20) NOT NULL,
+  `jmeno` varchar(20) NOT NULL DEFAULT '',
+  `prijmeni` varchar(20) NOT NULL DEFAULT '',
   `spravce_systemu` tinyint(1) NOT NULL DEFAULT '0',
   `admin` tinyint(1) NOT NULL DEFAULT '0',
   `recovery_token` char(60) DEFAULT NULL,
@@ -149,14 +137,14 @@ CREATE TABLE IF NOT EXISTS `uzivatele` (
   `login_valid` int NOT NULL DEFAULT (unix_timestamp()),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uzivatel_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 DELETE FROM `uzivatele`;
 INSERT INTO `uzivatele` (`id`, `email`, `heslo`, `jmeno`, `prijmeni`, `spravce_systemu`, `admin`, `recovery_token`, `create_token`, `login_valid`) VALUES
 	(1, 'admin@example.com', '$2y$10$.wnlSXED/rVkI8u6ukwm3e5lakBbJXjZ4cnM6OHS3iBLPcyZ0w.VS', 'Admin', '', 1, 1, NULL, NULL, 1714934917);
 
 DROP DATABASE IF EXISTS `souteze`;
-CREATE DATABASE IF NOT EXISTS `souteze` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `souteze`;
 USE `souteze`;
 
 DROP TABLE IF EXISTS `147_soutez`;
@@ -164,12 +152,12 @@ CREATE TABLE IF NOT EXISTS `147_soutez` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `skola` int unsigned NOT NULL,
   `soutezici_skolni_kolo` tinyint unsigned NOT NULL,
-  `ucitel_email` varchar(50) NOT NULL,
-  `ucitel_telefon` char(9) NOT NULL,
+  `ucitel_email` varchar(50) NOT NULL DEFAULT '',
+  `ucitel_telefon` char(9) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `skola` (`skola`),
   CONSTRAINT `147_soutez_ibfk_1` FOREIGN KEY (`skola`) REFERENCES `rezerv_sys`.`skoly` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 DELETE FROM `147_soutez`;
 INSERT INTO `147_soutez` (`id`, `skola`, `soutezici_skolni_kolo`, `ucitel_email`, `ucitel_telefon`) VALUES
@@ -179,22 +167,16 @@ DROP TABLE IF EXISTS `147_studenti`;
 CREATE TABLE IF NOT EXISTS `147_studenti` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `id_prihlasky` int unsigned NOT NULL,
-  `jmeno` varchar(20) NOT NULL,
-  `prijmeni` varchar(20) NOT NULL,
-  `datum_narozeni` date NOT NULL,
-  `trida` varchar(10) NOT NULL,
+  `jmeno` varchar(20) NOT NULL DEFAULT '',
+  `prijmeni` varchar(20) NOT NULL DEFAULT '',
+  `datum_narozeni` date NOT NULL DEFAULT '0001-01-01',
+  `trida` varchar(10) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `id_prihlasky` (`id_prihlasky`),
   CONSTRAINT `147_studenti_ibfk_1` FOREIGN KEY (`id_prihlasky`) REFERENCES `147_soutez` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 DELETE FROM `147_studenti`;
 INSERT INTO `147_studenti` (`id`, `id_prihlasky`, `jmeno`, `prijmeni`, `datum_narozeni`, `trida`) VALUES
 	(7, 4, 'Jan', 'Novák', '2009-08-10', '8.A'),
 	(8, 4, 'Eva', 'Novotná', '2009-04-07', '8.B');
-
-/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
