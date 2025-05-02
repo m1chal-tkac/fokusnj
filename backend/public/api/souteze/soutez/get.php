@@ -7,8 +7,9 @@ function get()
   $data = validate(array("url" => text(13, 13)));
 
   require __DIR__ . "/../../../../lib/db.php";
+  require_once __DIR__ . '/../../../../lib/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_soutez = "SELECT id, url, nazev, prihlasovani_od, prihlasovani_do FROM souteze WHERE url = ?";
   $stmt_soutez = $mysql->prepare($sql_soutez);
   $stmt_soutez->bind_param("s", $data["url"]);
@@ -19,7 +20,7 @@ function get()
 
   if (empty($soutez["id"]) || date("Y-m-d") < $soutez["prihlasovani_od"] || date("Y-m-d") > $soutez["prihlasovani_do"]) response(400, "Soutěž není dostupná");
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_pridavne_pole = "SELECT id, nazev, kategorie, typ FROM pridavne_pole WHERE id_souteze = ?";
   $stmt_pridavne_pole = $mysql->prepare($sql_pridavne_pole);
   $stmt_pridavne_pole->bind_param("i", $soutez["id"]);
@@ -37,7 +38,7 @@ function get()
     }
   }
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_skoly = "SELECT id, nazev FROM skoly";
   $skoly = $mysql->query($sql_skoly)->fetch_all(MYSQLI_ASSOC);
 

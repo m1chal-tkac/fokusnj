@@ -25,8 +25,9 @@ function post()
   if (!checkPassword($user["email"], $data["heslo"])) response(403, "Špatné heslo");
 
   require __DIR__ . "/../../../../lib/db.php";
+  require_once  __DIR__ . "/../../../../lib/env.php";
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "SELECT id FROM uzivatele WHERE email = ?";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("s", $data["email"]);
@@ -39,13 +40,12 @@ function post()
 
   $create_token = date("Y-m-d H:i:s", strtotime("+1 day")) . " " . $key;
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "INSERT uzivatele(email, admin, create_token, jmeno, prijmeni) VALUE(?, ?, ?, \"Neznámé\", \"Neznámé\")";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("sis", $data["email"], $data["admin"], $create_token);
   $stmt_uzivatel->execute();
 
-  require_once  __DIR__ . "/../../../../lib/env.php";
   require_once __DIR__ . "/../../../../lib/email.php";
 
   sendEmail($data["email"], "Nový účet FokusNJ", "Byli jste pozváni do systému soutěží FokusNJ.\n\nSvůj účet můžete založit zde: " . $_ENV["FRONTEND_SERVER"] . "/create-account?email=" . $data["email"] . "&key=" . $key . "\n\nPokud si myslíte, že se jedná o chybu, můžete tento email ignorovat.");

@@ -1,1 +1,2 @@
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 ErrorDocument 404 /404.html

@@ -7,8 +7,9 @@ use Firebase\JWT\Key;
 function checkPassword($email, $password)
 {
   require __DIR__ . "/db.php";
+  require_once __DIR__ . '/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "SELECT heslo FROM uzivatele WHERE email = ?";
   $stmt_soutez = $mysql->prepare($sql_uzivatel);
   $stmt_soutez->bind_param("s", $email);
@@ -22,8 +23,9 @@ function checkPassword($email, $password)
 function prihlaseni($email, $password)
 {
   require __DIR__ . "/db.php";
+  require_once __DIR__ . '/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "SELECT jmeno, prijmeni, heslo, admin, spravce_systemu FROM uzivatele WHERE email = ?";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("s", $email);
@@ -75,7 +77,7 @@ function getUser()
 
     require __DIR__ . "/db.php";
 
-    $mysql->select_db("rezerv_sys");
+    $mysql->select_db($_ENV["REZERV_SYS_DB"]);
     $sql_uzivatel = "SELECT login_valid FROM uzivatele WHERE email = ?";
     $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
     $stmt_uzivatel->bind_param("s", $data["email"]);

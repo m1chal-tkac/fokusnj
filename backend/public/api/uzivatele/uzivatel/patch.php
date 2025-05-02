@@ -30,8 +30,9 @@ function patch()
 
   if (isset($data["email"])) {
     require __DIR__ . "/../../../../lib/db.php";
+    require_once __DIR__ . '/../../../../lib/env.php';
 
-    $mysql->select_db("rezerv_sys");
+    $mysql->select_db($_ENV["REZERV_SYS_DB"]);
     $sql_uzivatel = "SELECT id FROM uzivatele WHERE email = ?";
     $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
     $stmt_uzivatel->bind_param("s", $data["email"]);
@@ -73,7 +74,7 @@ function patch()
 
     require __DIR__ . "/../../../../lib/db.php";
 
-    $mysql->select_db("rezerv_sys");
+    $mysql->select_db($_ENV["REZERV_SYS_DB"]);
     $sql_uzivatel = "UPDATE uzivatele SET " . $update_uzivatel . " WHERE email=?";
     $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
     $stmt_uzivatel->bind_param($bind_uzivatel, ...$value_uzivatel);

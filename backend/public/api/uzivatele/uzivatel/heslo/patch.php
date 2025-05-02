@@ -11,8 +11,9 @@ function patch()
   $data = validate($validation);
 
   require __DIR__ . "/../../../../../lib/db.php";
+  require_once  __DIR__ . "/../../../../../lib/env.php";
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "SELECT id, recovery_token FROM uzivatele WHERE email = ?";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("s", $data["email"]);
@@ -28,13 +29,12 @@ function patch()
 
       $recovery_token = date("Y-m-d H:i:s", strtotime("+1 hour")) . " " . $key;
 
-      $mysql->select_db("rezerv_sys");
+      $mysql->select_db($_ENV["REZERV_SYS_DB"]);
       $sql_uzivatel = "UPDATE uzivatele SET recovery_token=? WHERE email=?";
       $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
       $stmt_uzivatel->bind_param("ss", $recovery_token, $data["email"]);
       $stmt_uzivatel->execute();
 
-      require_once  __DIR__ . "/../../../../../lib/env.php";
       require_once __DIR__ . "/../../../../../lib/email.php";
 
       sendEmail($data["email"], "Obnova hesla FokusNJ", "Vyžádali jste si změnu hesla vašeho uživatelského účtu.\n\nZměnu můžete provést zde: " . $_ENV["FRONTEND_SERVER"] . "/change-password?email=" . $data["email"] . "&key=" . $key . "\n\nPokud si myslíte, že jste si změnu nevyžádali, můžete tento email ignorovat.");

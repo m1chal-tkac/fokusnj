@@ -15,8 +15,9 @@ function put()
   $data = validate($validation);
 
   require __DIR__ . "/../../../../lib/db.php";
+  require_once  __DIR__ . "/../../../../lib/env.php";
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "SELECT create_token FROM uzivatele WHERE email = ?";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("s", $data["email"]);
@@ -36,7 +37,7 @@ function put()
 
   $heslo = password_hash($data["heslo"], PASSWORD_BCRYPT);
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "UPDATE uzivatele SET jmeno=?, prijmeni=?, heslo=?, create_token=NULL WHERE email=?";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("ssss", $data["jmeno"], $data["prijmeni"], $heslo, $data["email"]);

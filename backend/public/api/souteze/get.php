@@ -18,8 +18,9 @@ function get()
   if (empty($user)) response(401, "Nedostatečná práva");
 
   require __DIR__ . "/../../../lib/db.php";
+  require_once __DIR__ . '/../../../lib/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_souteze = "SELECT url, nazev, pocet_prihlasek, prihlasovani_od, prihlasovani_do FROM souteze ORDER BY id DESC LIMIT ?";
   $stmt_souteze = $mysql->prepare($sql_souteze);
   $stmt_souteze->bind_param("i", $data["take"]);

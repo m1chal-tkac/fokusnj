@@ -15,8 +15,9 @@ function get()
   $data = validate(array("url" => text(13, 13)));
 
   require __DIR__ . "/../../../lib/db.php";
+  require_once __DIR__ . '/../../../lib/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_soutez = "SELECT id, nazev, prihlasovani_od, prihlasovani_do FROM souteze WHERE url = ?";
   $stmt_soutez = $mysql->prepare($sql_soutez);
   $stmt_soutez->bind_param("s", $data["url"]);
@@ -27,7 +28,7 @@ function get()
 
   $sql_prihlasky_select = "`" . $soutez["id"] . "_soutez`.id, ucitel_email, ucitel_telefon, soutezici_skolni_kolo, `" . $soutez["id"] . "_studenti`.jmeno, prijmeni, datum_narozeni, trida, rezerv_sys.skoly.nazev \"skola_nazev\"";
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_pridavne_pole = "SELECT id, nazev, kategorie, typ FROM pridavne_pole WHERE id_souteze = ?";
   $stmt_pridavne_pole = $mysql->prepare($sql_pridavne_pole);
   $stmt_pridavne_pole->bind_param("i", $soutez["id"]);
@@ -49,7 +50,7 @@ function get()
 
   $sql_prihlasky_select .= " ";
 
-  $mysql->select_db("souteze");
+  $mysql->select_db($_ENV["SOUTEZE_DB"]);
   $sql_prihlasky = "SELECT " . $sql_prihlasky_select . "FROM `" . $soutez["id"] . "_soutez` INNER JOIN `" . $soutez["id"] . "_studenti` ON `" . $soutez["id"] . "_soutez`.id = id_prihlasky INNER JOIN rezerv_sys.skoly ON skola = rezerv_sys.skoly.id";
   $prihlasky = $mysql->query($sql_prihlasky)->fetch_all(MYSQLI_ASSOC);
 

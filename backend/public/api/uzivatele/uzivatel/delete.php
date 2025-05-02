@@ -22,8 +22,9 @@ function delete()
   if (!checkPassword($user["email"], $data["heslo"])) response(403, "Špatné heslo");
 
   require __DIR__ . "/../../../../lib/db.php";
+  require_once __DIR__ . '/../../../../lib/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_uzivatel = "DELETE FROM uzivatele WHERE email = ?";
   $stmt_uzivatel = $mysql->prepare($sql_uzivatel);
   $stmt_uzivatel->bind_param("s", $data["email"]);

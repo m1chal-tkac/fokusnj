@@ -7,8 +7,9 @@ function post()
   $data = validate(array("url" => text(13, 13)));
 
   require __DIR__ . "/../../../../lib/db.php";
+  require_once __DIR__ . '/../../../../lib/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_soutez = "SELECT id, nazev, pocet_prihlasek, prihlasovani_od, prihlasovani_do FROM souteze WHERE url = ?";
   $stmt_soutez = $mysql->prepare($sql_soutez);
   $stmt_soutez->bind_param("s", $data["url"]);
@@ -35,7 +36,7 @@ function post()
     ),
   );
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_pridavne_pole = "SELECT id, nazev, kategorie, typ FROM pridavne_pole WHERE id_souteze = ?";
   $stmt_pridavne_pole = $mysql->prepare($sql_pridavne_pole);
   $stmt_pridavne_pole->bind_param("i", $soutez["id"]);
@@ -62,7 +63,7 @@ function post()
 
   $data = validate($validation);
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_skola = "SELECT id FROM skoly WHERE id = ?";
   $stmt_skola = $mysql->prepare($sql_skola);
   $stmt_skola->bind_param("i", $data["skola"]);
@@ -92,7 +93,7 @@ function post()
 
     $value_sql_skola .= ")";
 
-    $mysql->select_db("souteze");
+    $mysql->select_db($_ENV["SOUTEZE_DB"]);
     $sql_prihlaska = "INSERT `" . $soutez["id"] . "_soutez`(" . $insert_skola . ") VALUE" . $value_sql_skola;
     $stmt_prihlaska = $mysql->prepare($sql_prihlaska);
     $stmt_prihlaska->bind_param($bind_skola, ...$value_skola);
@@ -121,14 +122,14 @@ function post()
 
       $value_sql_student .= ")";
 
-      $mysql->select_db("souteze");
+      $mysql->select_db($_ENV["SOUTEZE_DB"]);
       $sql_student = "INSERT `" . $soutez["id"] . "_studenti`(" . $insert_student . ") VALUE" . $value_sql_student;
       $stmt_student = $mysql->prepare($sql_student);
       $stmt_student->bind_param($bind_student, ...$value_student);
       $stmt_student->execute();
     }
 
-    $mysql->select_db("rezerv_sys");
+    $mysql->select_db($_ENV["REZERV_SYS_DB"]);
     $sql_pocet = "UPDATE souteze SET pocet_prihlasek = " . $soutez["pocet_prihlasek"] + count($data["studenti"]) . " WHERE id = ?";
     $stmt_pocet = $mysql->prepare($sql_pocet);
     $stmt_pocet->bind_param("i", $soutez["id"]);

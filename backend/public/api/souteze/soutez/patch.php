@@ -15,8 +15,9 @@ function patch()
   $data = validate(array("url" => text(13, 13)));
 
   require __DIR__ . "/../../../../lib/db.php";
+  require_once __DIR__ . '/../../../../lib/env.php';
 
-  $mysql->select_db("rezerv_sys");
+  $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_soutez = "SELECT id FROM souteze WHERE url = ?";
   $stmt_soutez = $mysql->prepare($sql_soutez);
   $stmt_soutez->bind_param("s", $data["url"]);
@@ -64,7 +65,7 @@ function patch()
   if (count($value_soutez) > 1) {
     $update_soutez = substr($update_soutez, 0, -2);
 
-    $mysql->select_db("rezerv_sys");
+    $mysql->select_db($_ENV["REZERV_SYS_DB"]);
     $sql_soutez = "UPDATE souteze SET " . $update_soutez . " WHERE url=?";
     $stmt_soutez = $mysql->prepare($sql_soutez);
     $stmt_soutez->bind_param($bind_soutez, ...$value_soutez);

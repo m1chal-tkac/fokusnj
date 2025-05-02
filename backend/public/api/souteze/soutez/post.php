@@ -29,6 +29,7 @@ function post()
 
   try {
     require __DIR__ . "/../../../../lib/db.php";
+    require_once __DIR__ . '/../../../../lib/env.php';
 
     $mysql->begin_transaction();
 
@@ -40,7 +41,7 @@ function post()
     $pd = explode(".", str_replace(" ", "", $data["prihlasovani_do"]));
     $prihlasovani_do = $pd[2] . "-" . $pd[1] . "-" . $pd[0];
 
-    $mysql->select_db("rezerv_sys");
+    $mysql->select_db($_ENV["REZERV_SYS_DB"]);
     $sql_soutez = "INSERT souteze (url, nazev, prihlasovani_od, prihlasovani_do) VALUE (?, ?, ?, ?)";
     $stmt_soutez = $mysql->prepare($sql_soutez);
     $stmt_soutez->bind_param("ssss", $url, $data["nazev"], $prihlasovani_od, $prihlasovani_do);
@@ -52,7 +53,7 @@ function post()
     $pridavne_pole_student = array();
 
     foreach ($data["pridavne_pole"] as $key => $value) {
-      $mysql->select_db("rezerv_sys");
+      $mysql->select_db($_ENV["REZERV_SYS_DB"]);
       $sql_pridavne_pole = "INSERT pridavne_pole (id_souteze, kategorie, nazev, typ) VALUE (?, ?, ?, ?)";
       $stmt_pridavne_pole = $mysql->prepare($sql_pridavne_pole);
       $stmt_pridavne_pole->bind_param("isss", $id_souteze, $value["kategorie"], $value["nazev"], $value["typ"]);
@@ -80,7 +81,7 @@ function post()
 
     $sql_create_soutez .= ", FOREIGN KEY (skola) REFERENCES rezerv_sys.skoly(id))";
 
-    $mysql->select_db("souteze");
+    $mysql->select_db($_ENV["SOUTEZE_DB"]);
     $mysql->query($sql_create_soutez);
 
     $sql_create_studenti = "CREATE TABLE `" . $id_souteze . "_studenti`(id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, id_prihlasky INT UNSIGNED NOT NULL, jmeno VARCHAR(20) NOT NULL, prijmeni VARCHAR(20) NOT NULL, datum_narozeni DATE NOT NULL, trida VARCHAR(10) NOT NULL";
@@ -97,7 +98,7 @@ function post()
 
     $sql_create_studenti .= ", FOREIGN KEY (id_prihlasky) REFERENCES souteze.`" . $id_souteze . "_soutez`(id))";
 
-    $mysql->select_db("souteze");
+    $mysql->select_db($_ENV["SOUTEZE_DB"]);
     $mysql->query($sql_create_studenti);
 
     $mysql->commit();
