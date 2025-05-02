@@ -26,7 +26,7 @@ function get()
 
   if (empty($soutez["id"])) response(400, "Soutěž není dostupná");
 
-  $sql_prihlasky_select = "`" . $soutez["id"] . "_soutez`.id, ucitel_email, ucitel_telefon, soutezici_skolni_kolo, `" . $soutez["id"] . "_studenti`.jmeno, prijmeni, datum_narozeni, trida, rezerv_sys.skoly.nazev \"skola_nazev\"";
+  $sql_prihlasky_select = "`" . $soutez["id"] . "_soutez`.id, ucitel_email, ucitel_telefon, soutezici_skolni_kolo, `" . $soutez["id"] . "_studenti`.jmeno, prijmeni, datum_narozeni, trida, " . $_ENV["REZERV_SYS_DB"] . ".skoly.nazev \"skola_nazev\"";
 
   $mysql->select_db($_ENV["REZERV_SYS_DB"]);
   $sql_pridavne_pole = "SELECT id, nazev, kategorie, typ FROM pridavne_pole WHERE id_souteze = ?";
@@ -51,7 +51,7 @@ function get()
   $sql_prihlasky_select .= " ";
 
   $mysql->select_db($_ENV["SOUTEZE_DB"]);
-  $sql_prihlasky = "SELECT " . $sql_prihlasky_select . "FROM `" . $soutez["id"] . "_soutez` INNER JOIN `" . $soutez["id"] . "_studenti` ON `" . $soutez["id"] . "_soutez`.id = id_prihlasky INNER JOIN rezerv_sys.skoly ON skola = rezerv_sys.skoly.id";
+  $sql_prihlasky = "SELECT " . $sql_prihlasky_select . "FROM `" . $soutez["id"] . "_soutez` INNER JOIN `" . $soutez["id"] . "_studenti` ON `" . $soutez["id"] . "_soutez`.id = id_prihlasky INNER JOIN " . $_ENV["REZERV_SYS_DB"] . ".skoly ON skola = " . $_ENV["REZERV_SYS_DB"] . ".skoly.id";
   $prihlasky = $mysql->query($sql_prihlasky)->fetch_all(MYSQLI_ASSOC);
 
   $id = "";

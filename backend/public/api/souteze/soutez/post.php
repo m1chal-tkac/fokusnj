@@ -79,7 +79,7 @@ function post()
       $sql_create_soutez .= " NOT NULL";
     }
 
-    $sql_create_soutez .= ", FOREIGN KEY (skola) REFERENCES rezerv_sys.skoly(id))";
+    $sql_create_soutez .= ", FOREIGN KEY (skola) REFERENCES " . $_ENV["REZERV_SYS_DB"] . ".skoly(id))";
 
     $mysql->select_db($_ENV["SOUTEZE_DB"]);
     $mysql->query($sql_create_soutez);
@@ -96,7 +96,7 @@ function post()
       $sql_create_studenti .= " NOT NULL";
     }
 
-    $sql_create_studenti .= ", FOREIGN KEY (id_prihlasky) REFERENCES souteze.`" . $id_souteze . "_soutez`(id))";
+    $sql_create_studenti .= ", FOREIGN KEY (id_prihlasky) REFERENCES " . $_ENV["SOUTEZE_DB"] . ".`" . $id_souteze . "_soutez`(id))";
 
     $mysql->select_db($_ENV["SOUTEZE_DB"]);
     $mysql->query($sql_create_studenti);
